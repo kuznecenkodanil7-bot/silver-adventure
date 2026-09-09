@@ -1,0 +1,25 @@
+name: Build Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main", "master"]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force build | Out-Null
+          g++ src/main.cpp -std=c++17 -O2 -mwindows -municode -o build/MultiTaskClicker.exe -luser32 -lcomctl32
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: MultiTaskClicker-Windows
+          path: build/MultiTaskClicker.exe
